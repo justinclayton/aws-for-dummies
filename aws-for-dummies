@@ -1,0 +1,21 @@
+#!/bin/bash
+
+function provide_hints {
+  ## try other regions
+  for region in us-west-2 us-east-1 us-east-2; do
+    echo "Also trying $region"
+    aws --region $region $input_params
+    local exitcode=$?
+    if [[ $exitcode -eq 0 ]]; then
+      echo "DUMMY: it seems what you were looking for may have actually been in $region..."
+      break
+    fi
+  done
+}
+
+input_params=$*
+aws $input_params
+
+exitcode=$?
+[[ $exitcode -eq 254 ]] && provide_hints $input_params
+
